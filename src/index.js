@@ -21,4 +21,4 @@ if (process.env.NODE_ENV !== 'production') {
 console.log('it works!');
 console.log('gon', gon);
 
-ReactDOM.render(<Chat data={gon} />, document.getElementById('chat'));
+ReactDOM.render(<Chat gon={gon} />, document.getElementById('chat'));
