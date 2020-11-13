@@ -1,6 +1,8 @@
+import gon from 'gon';
+
 const initialState = {
-  channels: [],
-  currentChannelId: null,
+  channels: gon.channels || [],
+  currentChannelId: gon.currentChannelId || null,
 };
 
 const channelsReducer = (state, action) => {

@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 import '../assets/application.scss';
 
 // import faker from 'faker';
-import gon from 'gon';
+// import gon from 'gon';
 // import cookies from 'js-cookie';
 // import io from 'socket.io-client';
 
@@ -19,6 +19,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 console.log('it works!');
-console.log('gon', gon);
+// console.log('gon', gon);
 
-ReactDOM.render(<Chat gon={gon} />, document.getElementById('chat'));
+ReactDOM.render(<Chat />, document.getElementById('chat'));
