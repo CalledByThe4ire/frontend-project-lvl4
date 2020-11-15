@@ -1,3 +1,3 @@
-import Channels from './channels.jsx';
+import Channels from './channels';
 
 export default Channels;

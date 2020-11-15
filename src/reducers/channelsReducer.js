@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import gon from 'gon';
 
 const initialState = {
@@ -5,11 +7,13 @@ const initialState = {
   currentChannelId: gon.currentChannelId || null,
 };
 
-const channelsReducer = (state, action) => {
+const channelsReducer = (state = initialState, action) => {
   switch (action.type) {
     default:
-      return initialState;
+      break;
   }
+
+  return state;
 };
 
 export default channelsReducer;

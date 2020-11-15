@@ -1,3 +1,3 @@
-import Messages from './messages.jsx';
+import Messages from './messages';
 
 export default Messages;
