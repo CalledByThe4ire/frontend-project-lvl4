@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import {
   ADD_MESSAGE_REQUEST,
   ADD_MESSAGE_SUCCESS,

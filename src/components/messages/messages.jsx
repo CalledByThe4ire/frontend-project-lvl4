@@ -18,7 +18,7 @@ const Messages = () => {
   const dispatch = useDispatch();
 
   const currentChannelId = useSelector(
-    (state) => state.channelsInfo.currentChannelId
+    (state) => state.channelsInfo.currentChannelId,
   );
 
   const isLoading = useSelector((state) => state.messagesInfo.isLoading);
@@ -41,9 +41,9 @@ const Messages = () => {
   return (
     <div className="d-flex h-100 flex-column">
       <div className="overflow-auto d-flex flex-wrap mb-3">
-        {!isLoading &&
-          messages.length !== 0 &&
-          messages
+        {!isLoading
+          && messages.length !== 0
+          && messages
             .filter((msg) => msg.channelId === currentChannelId)
             .map(({ id, body, nickname }) => (
               <Message key={id} message={{ body, nickname }} />
