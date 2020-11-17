@@ -1,5 +1,5 @@
 import React from 'react';
-import { Nav, Badge, Button } from 'react-bootstrap';
+import { Badge, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentChannelId } from '../../actions/channelsActions';
 
@@ -7,7 +7,7 @@ const Channels = () => {
   const channels = useSelector((state) => state.channelsInfo.channels);
 
   const currentChannelId = useSelector(
-    (state) => state.channelsInfo.currentChannelId,
+    (state) => state.channelsInfo.currentChannelId
   );
 
   const dispatch = useDispatch();
@@ -24,21 +24,15 @@ const Channels = () => {
           +
         </Badge>
       </div>
-      <Nav variant="pills" className="flex-column nav-fill">
-        {channels.map((channel) => (
-          <Nav.Item key={channel.id}>
-            <Button
-              variant={
-                channel.id === currentChannelId ? 'primary' : 'secondary'
-              }
-              className="nav-link btn btn-block mb-2 text-left"
-              onClick={() => handleClick(channel.id)}
-            >
-              {channel.name}
-            </Button>
-          </Nav.Item>
-        ))}
-      </Nav>
+      {channels.map((channel) => (
+        <Button
+          variant={channel.id === currentChannelId ? 'primary' : 'secondary'}
+          className="nav-link btn btn-block mb-2 text-left"
+          onClick={() => handleClick(channel.id)}
+        >
+          {channel.name}
+        </Button>
+      ))}
     </>
   );
 };
