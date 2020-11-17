@@ -1,5 +1,7 @@
 import React from 'react';
-import { Badge, Button } from 'react-bootstrap';
+import {
+  Badge, Button, ButtonGroup, Dropdown,
+} from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentChannelId } from '../../actions/channelsActions';
 
@@ -7,7 +9,7 @@ const Channels = () => {
   const channels = useSelector((state) => state.channelsInfo.channels);
 
   const currentChannelId = useSelector(
-    (state) => state.channelsInfo.currentChannelId
+    (state) => state.channelsInfo.currentChannelId,
   );
 
   const dispatch = useDispatch();
@@ -25,13 +27,33 @@ const Channels = () => {
         </Badge>
       </div>
       {channels.map((channel) => (
-        <Button
-          variant={channel.id === currentChannelId ? 'primary' : 'secondary'}
-          className="nav-link btn btn-block mb-2 text-left"
-          onClick={() => handleClick(channel.id)}
-        >
-          {channel.name}
-        </Button>
+        <Dropdown as={ButtonGroup} key={channel.id} className="d-flex mb-2">
+          <Button
+            className="w-100 text-left"
+            variant={currentChannelId === channel.id ? 'primary' : 'secondary'}
+            onClick={() => handleClick(channel.id)}
+          >
+            {channel.name}
+          </Button>
+
+          {channel.removable && (
+            <>
+              <Dropdown.Toggle
+                split
+                variant={
+                  currentChannelId === channel.id ? 'primary' : 'secondary'
+                }
+                id="dropdown-split-basic"
+              />
+
+              <Dropdown.Menu>
+                <Dropdown.Item eventKey="1">Rename</Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item eventKey="2">Remove</Dropdown.Item>
+              </Dropdown.Menu>
+            </>
+          )}
+        </Dropdown>
       ))}
     </>
   );
