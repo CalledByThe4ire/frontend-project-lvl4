@@ -1,15 +1,18 @@
 import React from 'react';
-import {
-  Badge, Button, ButtonGroup, Dropdown,
-} from 'react-bootstrap';
+import { Badge, Button, ButtonGroup, Dropdown } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
+import Modal from '../modal';
 import { setCurrentChannelId } from '../../actions/channelsActions';
 
 const Channels = () => {
   const channels = useSelector((state) => state.channelsInfo.channels);
 
   const currentChannelId = useSelector(
-    (state) => state.channelsInfo.currentChannelId,
+    (state) => state.channelsInfo.currentChannelId
+  );
+
+  const isModalOpened = useSelector(
+    (state) => state.channelsInfo.modal.isOpened
   );
 
   const dispatch = useDispatch();
@@ -55,6 +58,7 @@ const Channels = () => {
           )}
         </Dropdown>
       ))}
+      {isModalOpened && <Modal />}
     </>
   );
 };
