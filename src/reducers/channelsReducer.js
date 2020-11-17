@@ -6,6 +6,11 @@ import { SET_CURRENT_CHANNEL_ID } from '../actions/types';
 const initialState = {
   channels: gon.channels || [],
   currentChannelId: gon.currentChannelId || null,
+  modal: {
+    isOpened: false,
+    type: null,
+    extra: null,
+  },
 };
 
 const channelsReducer = (state = initialState, action) => {
