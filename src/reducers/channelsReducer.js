@@ -13,17 +13,15 @@ const initialState = {
   currentChannelId: gon.currentChannelId || null,
   isLoading: false,
   error: null,
-  modal: {
-    isOpened: false,
-    type: null,
-    extra: null,
-  },
 };
 
 const channelsReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_CHANNEL_REQUEST:
-      return { ...state, isLoading: true };
+      return {
+        ...state,
+        isLoading: true,
+      };
 
     case ADD_CHANNEL_SUCCESS:
       return {
@@ -34,7 +32,11 @@ const channelsReducer = (state = initialState, action) => {
       };
 
     case ADD_CHANNEL_FAILURE:
-      return { ...state, isLoading: false, error: action.payload };
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      };
 
     case SET_CURRENT_CHANNEL_ID:
       return { ...state, currentChannelId: action.payload };

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Badge, Button, ButtonGroup, Dropdown } from 'react-bootstrap';
+import { Badge, Button, ButtonGroup, Dropdown, Spinner } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from '../modal';
 import { setCurrentChannelId } from '../../actions/channelsActions';
+import { openModal, closeModal } from '../../actions/modalActions';
 
 const Channels = () => {
   const channels = useSelector((state) => state.channelsInfo.channels);
@@ -11,13 +12,15 @@ const Channels = () => {
     (state) => state.channelsInfo.currentChannelId
   );
 
-  const isModalOpened = useSelector(
-    (state) => state.channelsInfo.modal.isOpened
-  );
+  const isModalOpened = useSelector((state) => state.modal.isOpened);
 
   const dispatch = useDispatch();
 
-  const handleClick = (id) => {
+  const handleOpenModalClick = (type) => {
+    dispatch(openModal(type));
+  };
+
+  const handleCurrentChannelClick = (id) => {
     dispatch(setCurrentChannelId(id));
   };
 
@@ -25,7 +28,12 @@ const Channels = () => {
     <>
       <div className="d-flex flex-nowrap align-items-center mb-2">
         <h5 className="h5 m-0 mr-1">Channels</h5>
-        <Badge variant="primary" className="ml-auto" role="button">
+        <Badge
+          variant="primary"
+          className="ml-auto"
+          role="button"
+          onClick={() => handleOpenModalClick('add')}
+        >
           +
         </Badge>
       </div>
@@ -34,7 +42,7 @@ const Channels = () => {
           <Button
             className="w-100 text-left"
             variant={currentChannelId === channel.id ? 'primary' : 'secondary'}
-            onClick={() => handleClick(channel.id)}
+            onClick={() => handleCurrentChannelClick(channel.id)}
           >
             {channel.name}
           </Button>
@@ -50,9 +58,13 @@ const Channels = () => {
               />
 
               <Dropdown.Menu>
-                <Dropdown.Item eventKey="1">Rename</Dropdown.Item>
+                <Dropdown.Item onClick={() => handleOpenModalClick('rename')}>
+                  Rename
+                </Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Item eventKey="2">Remove</Dropdown.Item>
+                <Dropdown.Item onClick={() => handleOpenModalClick('remove')}>
+                  Remove
+                </Dropdown.Item>
               </Dropdown.Menu>
             </>
           )}
