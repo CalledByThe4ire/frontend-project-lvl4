@@ -1,9 +1,15 @@
 import React from 'react';
-import { Badge, Button, ButtonGroup, Dropdown, Spinner } from 'react-bootstrap';
+import {
+  Badge,
+  Button,
+  ButtonGroup,
+  Dropdown,
+} from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from '../modal';
+import Error from '../error';
 import { setCurrentChannelId } from '../../actions/channelsActions';
-import { openModal, closeModal } from '../../actions/modalActions';
+import { openModal } from '../../actions/modalActions';
 
 const Channels = () => {
   const channels = useSelector((state) => state.channelsInfo.channels);
@@ -13,6 +19,10 @@ const Channels = () => {
   );
 
   const isModalOpened = useSelector((state) => state.modal.isOpened);
+
+  const isLoading = useSelector((state) => state.channelsInfo.isLoading);
+
+  const error = useSelector((state) => state.channelsInfo.error);
 
   const dispatch = useDispatch();
 
@@ -71,6 +81,7 @@ const Channels = () => {
         </Dropdown>
       ))}
       {isModalOpened && <Modal />}
+      {!isLoading && error && <Error />}
     </>
   );
 };

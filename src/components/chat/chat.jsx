@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import io from 'socket.io-client';
 import { NicknameContext } from '../../context/nickname.jsx';
 import { addChannelSucess } from '../../actions/channelsActions';
@@ -11,6 +11,7 @@ import Messages from '../messages';
 
 const Chat = () => {
   const socket = io();
+
   const dispatch = useDispatch();
 
   const nickname = useContext(NicknameContext);

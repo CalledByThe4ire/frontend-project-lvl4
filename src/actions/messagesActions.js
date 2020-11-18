@@ -28,6 +28,7 @@ export const addMessage = (id, message) => async (dispatch) => {
 
     await axios.post(`${routes.channelMessagesPath(id)}`, data);
   } catch (error) {
+    console.error(error);
     dispatch(addMessageFailure(error));
   }
 };

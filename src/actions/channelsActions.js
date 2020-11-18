@@ -15,7 +15,7 @@ export const addChannelSucess = (payload) => ({
 });
 
 export const addChannelFailure = (payload) => {
-  console.log(payload);
+  console.error(payload);
   return {
     type: ADD_CHANNEL_FAILURE,
     payload,
@@ -32,6 +32,7 @@ export const addChannel = (name) => async (dispatch) => {
 
     await axios.post(`${routes.channelsPath()}`, data);
   } catch (error) {
+    console.error(error);
     dispatch(addChannelFailure(error));
   }
 };
