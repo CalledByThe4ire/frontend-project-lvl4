@@ -4,7 +4,7 @@ import {
   Modal, Button, Form, Spinner,
 } from 'react-bootstrap';
 import { closeModal } from '../../actions/modalActions';
-import { addChannel } from '../../actions/channelsActions';
+import { addChannel, renameChannel } from '../../actions/channelsActions';
 
 export default () => {
   const [show, setShow] = useState(true);
@@ -33,29 +33,33 @@ export default () => {
   };
 
   const handleFormProcessing = (event, value) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     const { type, target } = event;
 
     const form = type === 'submit' ? target : formRef.current;
 
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
+    if (form.checkValidity() !== 'false') {
+      setValidated(true);
     }
 
-    setValidated(true);
-
-    if (validated) {
+    if (value !== '') {
       switch (modalType) {
         case 'add':
           setName('');
-          dispatch(addChannel(value));
           dispatch(closeModal());
+          dispatch(addChannel(value));
           break;
 
         case 'rename':
+          setName('');
+          dispatch(closeModal());
+          dispatch(renameChannel(channelId, value));
           break;
 
         case 'remove':
+          dispatch(closeModal());
           break;
 
         default:
@@ -83,7 +87,7 @@ export default () => {
     }
 
     return null;
-  }, [name]);
+  });
 
   return (
     <Modal

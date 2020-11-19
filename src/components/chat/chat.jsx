@@ -2,7 +2,10 @@ import React, { useContext, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
 import { NicknameContext } from '../../context/nickname.jsx';
-import { addChannelSucess } from '../../actions/channelsActions';
+import {
+  addChannelSucess,
+  renameChannelSucess,
+} from '../../actions/channelsActions';
 import { addMessageSucess } from '../../actions/messagesActions';
 import NavBar from '../navbar';
 import Layout from '../layout';
@@ -42,6 +45,16 @@ const Chat = () => {
       } = channel;
 
       dispatch(addChannelSucess({ name, removable, id }));
+    });
+
+    socket.on('renameChannel', (channel) => {
+      const {
+        data: {
+          attributes: { name, id },
+        },
+      } = channel;
+
+      dispatch(renameChannelSucess({ name, id }));
     });
   }, []);
 
