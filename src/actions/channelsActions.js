@@ -6,20 +6,21 @@ import {
   RENAME_CHANNEL_REQUEST,
   RENAME_CHANNEL_SUCCESS,
   RENAME_CHANNEL_FAILURE,
+  REMOVE_CHANNEL_REQUEST,
+  REMOVE_CHANNEL_SUCCESS,
+  REMOVE_CHANNEL_FAILURE,
   SET_CURRENT_CHANNEL_ID,
 } from './types';
 import routes from '../routes';
 
 const addChannelRequest = () => ({ type: ADD_CHANNEL_REQUEST });
 
-const renameChannelRequest = () => ({ type: RENAME_CHANNEL_REQUEST });
-
-export const addChannelSucess = (payload) => ({
+export const addChannelSuccess = (payload) => ({
   type: ADD_CHANNEL_SUCCESS,
   payload,
 });
 
-export const addChannelFailure = (payload) => {
+const addChannelFailure = (payload) => {
   console.error(payload);
   return {
     type: ADD_CHANNEL_FAILURE,
@@ -27,15 +28,32 @@ export const addChannelFailure = (payload) => {
   };
 };
 
-export const renameChannelSucess = (payload) => ({
+const renameChannelRequest = () => ({ type: RENAME_CHANNEL_REQUEST });
+
+const renameChannelFailure = (payload) => {
+  console.error(payload);
+  return {
+    type: RENAME_CHANNEL_FAILURE,
+    payload,
+  };
+};
+
+export const renameChannelSuccess = (payload) => ({
   type: RENAME_CHANNEL_SUCCESS,
   payload,
 });
 
-export const renameChannelFailure = (payload) => {
+const removeChannelRequest = () => ({ type: REMOVE_CHANNEL_REQUEST });
+
+export const removeChannelSuccess = (payload) => ({
+  type: REMOVE_CHANNEL_SUCCESS,
+  payload,
+});
+
+const removeChannelFailure = (payload) => {
   console.error(payload);
   return {
-    type: RENAME_CHANNEL_FAILURE,
+    type: REMOVE_CHANNEL_FAILURE,
     payload,
   };
 };
@@ -67,6 +85,21 @@ export const renameChannel = (id, name) => async (dispatch) => {
   } catch (error) {
     console.error(error);
     dispatch(renameChannelFailure(error));
+  }
+};
+
+export const removeChannel = (id) => async (dispatch) => {
+  dispatch(removeChannelRequest());
+
+  try {
+    const data = {
+      data: { id },
+    };
+
+    await axios.delete(`${routes.channelPath(id)}`, data);
+  } catch (error) {
+    console.error(error);
+    dispatch(removeChannelFailure(error));
   }
 };
 

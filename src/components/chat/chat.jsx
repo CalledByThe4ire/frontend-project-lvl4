@@ -1,12 +1,18 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
+import gon from 'gon';
 import { NicknameContext } from '../../context/nickname.jsx';
 import {
-  addChannelSucess,
-  renameChannelSucess,
+  addChannelSuccess,
+  renameChannelSuccess,
+  removeChannelSuccess,
+  setCurrentChannelId,
 } from '../../actions/channelsActions';
-import { addMessageSucess } from '../../actions/messagesActions';
+import {
+  addMessageSuccess,
+  removeChannelMessages,
+} from '../../actions/messagesActions';
 import NavBar from '../navbar';
 import Layout from '../layout';
 import Channels from '../channels';
@@ -28,7 +34,7 @@ const Chat = () => {
       } = msg;
 
       dispatch(
-        addMessageSucess({
+        addMessageSuccess({
           body,
           id,
           nickname,
@@ -44,7 +50,7 @@ const Chat = () => {
         },
       } = channel;
 
-      dispatch(addChannelSucess({ name, removable, id }));
+      dispatch(addChannelSuccess({ name, removable, id }));
     });
 
     socket.on('renameChannel', (channel) => {
@@ -54,7 +60,17 @@ const Chat = () => {
         },
       } = channel;
 
-      dispatch(renameChannelSucess({ name, id }));
+      dispatch(renameChannelSuccess({ name, id }));
+    });
+
+    socket.on('removeChannel', (channelId) => {
+      const {
+        data: { id },
+      } = channelId;
+
+      dispatch(removeChannelSuccess({ id }));
+      dispatch(removeChannelMessages({ id }));
+      dispatch(setCurrentChannelId(gon.currentChannelId));
     });
   }, []);
 

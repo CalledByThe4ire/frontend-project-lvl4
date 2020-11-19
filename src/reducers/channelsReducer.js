@@ -8,6 +8,9 @@ import {
   RENAME_CHANNEL_REQUEST,
   RENAME_CHANNEL_SUCCESS,
   RENAME_CHANNEL_FAILURE,
+  REMOVE_CHANNEL_REQUEST,
+  REMOVE_CHANNEL_SUCCESS,
+  REMOVE_CHANNEL_FAILURE,
   SET_CURRENT_CHANNEL_ID,
 } from '../actions/types';
 
@@ -36,6 +39,7 @@ const channelsReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_CHANNEL_REQUEST:
     case RENAME_CHANNEL_REQUEST:
+    case REMOVE_CHANNEL_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -61,8 +65,19 @@ const channelsReducer = (state = initialState, action) => {
         ),
       };
 
+    case REMOVE_CHANNEL_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        channels: state.channels.filter(
+          (channel) => channel.id !== action.payload.id,
+        ),
+      };
+
     case ADD_CHANNEL_FAILURE:
     case RENAME_CHANNEL_FAILURE:
+    case REMOVE_CHANNEL_FAILURE:
       return {
         ...state,
         isLoading: false,

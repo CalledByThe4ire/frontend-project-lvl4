@@ -2,6 +2,7 @@ import {
   ADD_MESSAGE_REQUEST,
   ADD_MESSAGE_SUCCESS,
   ADD_MESSAGE_FAILURE,
+  REMOVE_CHANNEL_MESSAGES,
 } from '../actions/types';
 
 const initialState = {
@@ -25,6 +26,14 @@ const messagesReducer = (state = initialState, action) => {
 
     case ADD_MESSAGE_FAILURE:
       return { ...state, isLoading: false, error: action.payload };
+
+    case REMOVE_CHANNEL_MESSAGES:
+      return {
+        ...state,
+        messages: state.messages.filter(
+          (message) => message.channelId !== action.payload.id,
+        ),
+      };
     default:
       break;
   }

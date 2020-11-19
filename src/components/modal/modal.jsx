@@ -4,7 +4,11 @@ import {
   Modal, Button, Form, Spinner,
 } from 'react-bootstrap';
 import { closeModal } from '../../actions/modalActions';
-import { addChannel, renameChannel } from '../../actions/channelsActions';
+import {
+  addChannel,
+  renameChannel,
+  removeChannel,
+} from '../../actions/channelsActions';
 
 export default () => {
   const [show, setShow] = useState(true);
@@ -32,7 +36,7 @@ export default () => {
     dispatch(closeModal());
   };
 
-  const handleFormProcessing = (event, value) => {
+  const handleFormProcessing = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -44,46 +48,28 @@ export default () => {
       setValidated(true);
     }
 
-    if (value !== '') {
-      switch (modalType) {
-        case 'add':
-          setName('');
-          dispatch(closeModal());
-          dispatch(addChannel(value));
-          break;
-
-        case 'rename':
-          setName('');
-          dispatch(closeModal());
-          dispatch(renameChannel(channelId, value));
-          break;
-
-        case 'remove':
-          dispatch(closeModal());
-          break;
-
-        default:
-          throw new Error(`Unknown type: ${modalType}`);
+    if (inputRef.current) {
+      if (inputRef.current.value !== '') {
+        setName('');
+        dispatch(closeModal());
+        if (modalType === 'add') {
+          dispatch(addChannel(inputRef.current.value));
+        } else if (modalType === 'rename') {
+          dispatch(renameChannel(channelId, inputRef.current.value));
+        }
       }
+    } else {
+      dispatch(closeModal());
+      dispatch(removeChannel(channelId));
     }
   };
 
   useEffect(() => {
-    switch (modalType) {
-      case 'add':
-        inputRef.current.focus();
-        break;
-
-      case 'rename':
-        inputRef.current.select();
-        inputRef.current.focus();
-        break;
-
-      case 'remove':
-        break;
-
-      default:
-        throw new Error(`Unknown type: ${modalType}`);
+    if (modalType === 'add') {
+      inputRef.current.focus();
+    } else if (modalType === 'rename') {
+      inputRef.current.select();
+      inputRef.current.focus();
     }
 
     return null;
@@ -108,7 +94,7 @@ export default () => {
           noValidate
           validated={validated}
           ref={formRef}
-          onSubmit={(event) => handleFormProcessing(event, inputRef.current.value)}
+          onSubmit={handleFormProcessing}
         >
           <Form.Group className="mb-0">
             {modalType !== 'remove' ? (
@@ -142,7 +128,7 @@ export default () => {
         </Button>
         <Button
           variant={modalType === 'remove' ? 'danger' : 'primary'}
-          onClick={(event) => handleFormProcessing(event, inputRef.current.value)}
+          onClick={handleFormProcessing}
         >
           {isLoading ? (
             <Spinner
