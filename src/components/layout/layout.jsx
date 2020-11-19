@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Container, Row, Col } from 'react-bootstrap';
 
 const Layout = ({ left, right }) => (
-  <Container className="h-100 mb-3">
-    <Row className="h-100">
+  <Container className="h-100 mb-3 border border-top-0 border-bottom-0">
+    <Row className="h-100 px-xs-0 px-sm-3">
       <Col xs sm={3} className="border-right pl-xs-3 pl-sm-0">
         {left}
       </Col>

@@ -5,7 +5,7 @@ import { Container, Navbar } from 'react-bootstrap';
 const NavBar = ({ title }) => (
   <Navbar bg="primary" variant="dark" className="mb-3">
     <Container>
-      <Navbar.Brand>{title}</Navbar.Brand>
+      <Navbar.Brand className="pl-xs-0 pl-sm-3">{title}</Navbar.Brand>
     </Container>
   </Navbar>
 );
