@@ -45,7 +45,12 @@ const Channels = () => {
         </Badge>
       </div>
       {channels.map((channel) => (
-        <Dropdown as={ButtonGroup} key={channel.id} className="d-flex mb-2">
+        <Dropdown
+          as={ButtonGroup}
+          key={channel.id}
+          className="d-flex mb-2"
+          onToggle={() => handleCurrentChannelClick(channel.id)}
+        >
           <Button
             className="w-100 text-left"
             variant={currentChannelId === channel.id ? 'primary' : 'secondary'}
@@ -61,7 +66,7 @@ const Channels = () => {
                 variant={
                   currentChannelId === channel.id ? 'primary' : 'secondary'
                 }
-                id="dropdown-split-basic"
+
               />
 
               <Dropdown.Menu>
