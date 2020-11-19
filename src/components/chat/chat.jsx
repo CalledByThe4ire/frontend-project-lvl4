@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
 import { NicknameContext } from '../../context/nickname.jsx';
 import { addChannelSucess } from '../../actions/channelsActions';
@@ -30,7 +30,7 @@ const Chat = () => {
           id,
           nickname,
           channelId,
-        })
+        }),
       );
     });
 

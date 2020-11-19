@@ -1,40 +1,61 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Modal, Button, Form, Spinner } from 'react-bootstrap';
-import classnames from 'classnames';
+import {
+  Modal, Button, Form, Spinner,
+} from 'react-bootstrap';
 import { closeModal } from '../../actions/modalActions';
 import { addChannel } from '../../actions/channelsActions';
 
 export default () => {
   const [show, setShow] = useState(true);
+
   const [name, setName] = useState('');
+
+  const [validated, setValidated] = useState(false);
 
   const dispatch = useDispatch();
 
   const inputRef = useRef();
 
+  const formRef = useRef();
+
   const modalType = useSelector((state) => state.modal.type);
 
-  const isLoading = useSelector((state) => state.channelsInfo.isLoading);
+  const channelId = useSelector((state) => state.modal.extra);
 
-  const handleChange = ({ target }) => {
-    setName(target.value);
-  };
+  const channels = useSelector((state) => state.channelsInfo.channels);
+
+  const isLoading = useSelector((state) => state.channelsInfo.isLoading);
 
   const handleClose = () => {
     setShow(false);
     dispatch(closeModal());
   };
 
-  const handleSubmit = (event, value) => {
-    event.preventDefault();
+  const handleFormProcessing = (event, value) => {
+    const { type, target } = event;
 
-    if (value !== '') {
+    const form = type === 'submit' ? target : formRef.current;
+
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    setValidated(true);
+
+    if (validated) {
       switch (modalType) {
         case 'add':
           setName('');
           dispatch(addChannel(value));
           dispatch(closeModal());
+          break;
+
+        case 'rename':
+          break;
+
+        case 'remove':
           break;
 
         default:
@@ -51,6 +72,10 @@ export default () => {
 
       case 'rename':
         inputRef.current.select();
+        inputRef.current.focus();
+        break;
+
+      case 'remove':
         break;
 
       default:
@@ -58,7 +83,7 @@ export default () => {
     }
 
     return null;
-  }, []);
+  }, [name]);
 
   return (
     <Modal
@@ -75,38 +100,45 @@ export default () => {
       </Modal.Header>
 
       <Modal.Body>
-        <Form onSubmit={(event) => handleSubmit(event, inputRef.current.value)}>
+        <Form
+          noValidate
+          validated={validated}
+          ref={formRef}
+          onSubmit={(event) => handleFormProcessing(event, inputRef.current.value)}
+        >
           <Form.Group className="mb-0">
             {modalType !== 'remove' ? (
-              <Form.Control
-                type="text"
-                ref={inputRef}
-                value={name}
-                onChange={handleChange}
-              />
+              <>
+                <Form.Control
+                  type="text"
+                  ref={inputRef}
+                  defaultValue={
+                    channelId
+                      ? channels.find((c) => c.id === channelId).name
+                      : name
+                  }
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please provide channel name.
+                </Form.Control.Feedback>
+              </>
             ) : (
-              <Form.Text>
-                <h2 className="text-center text-danger">Are you sure?</h2>
-              </Form.Text>
+              <p className="m-0">
+                This operation cannot be undone. Would you like to proceed?
+              </p>
             )}
           </Form.Group>
         </Form>
       </Modal.Body>
 
       <Modal.Footer>
-        <Button
-          variant="secondary"
-          className={classnames({ 'mr-auto': modalType === 'remove' })}
-          onClick={handleClose}
-        >
+        <Button variant="secondary" onClick={handleClose}>
           Cancel
         </Button>
         <Button
-          type="submit"
           variant={modalType === 'remove' ? 'danger' : 'primary'}
-          disabled={!name}
-          style={{ cursor: !name ? 'not-allowed' : 'pointer' }}
-          onClick={(event) => handleSubmit(event, inputRef.current.value)}
+          onClick={(event) => handleFormProcessing(event, inputRef.current.value)}
         >
           {isLoading ? (
             <Spinner
@@ -115,7 +147,9 @@ export default () => {
               size="sm"
               role="status"
               aria-hidden="true"
-            />
+            >
+              <span className="sr-only">Loading...</span>
+            </Spinner>
           ) : (
             `${modalType.charAt(0).toUpperCase() + modalType.slice(1)}`
           )}

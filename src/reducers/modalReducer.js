@@ -3,6 +3,7 @@ import { OPEN_MODAL, CLOSE_MODAL } from '../actions/types';
 const initialState = {
   isOpened: false,
   type: null,
+  extra: null,
 };
 
 const modalReducer = (state = initialState, action) => {
@@ -11,7 +12,8 @@ const modalReducer = (state = initialState, action) => {
       return {
         ...state,
         isOpened: true,
-        type: action.payload,
+        type: action.payload.type,
+        extra: action.payload.id || state.extra,
       };
 
     case CLOSE_MODAL:
@@ -19,6 +21,7 @@ const modalReducer = (state = initialState, action) => {
         ...state,
         isOpened: false,
         type: null,
+        extra: null,
       };
 
     default:
