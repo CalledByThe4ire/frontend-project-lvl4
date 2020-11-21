@@ -32,9 +32,18 @@ const buildState = (defaultState) => {
 export default (app, io, defaultState = {}) => {
   const state = buildState(defaultState);
 
+  const rollbarConfig = {
+    accessToken: '1ddab53d467940529b53d2a7711ca759',
+    captureUncaught: true,
+    captureUnhandledRejections: true,
+    payload: {
+      environment: 'production',
+    },
+  };
+
   app
     .get('/', (_req, reply) => {
-      reply.view('index.pug', { gon: state });
+      reply.view('index.pug', { gon: state, rollbarConfig });
     })
     .get('/api/v1/channels', (_req, reply) => {
       const resources = state.channels.map((c) => ({
@@ -48,7 +57,11 @@ export default (app, io, defaultState = {}) => {
       reply.send(response);
     })
     .post('/api/v1/channels', (req, reply) => {
-      const { data: { attributes: { name } } } = req.body;
+      const {
+        data: {
+          attributes: { name },
+        },
+      } = req.body;
       const channel = {
         name,
         removable: true,
@@ -86,7 +99,9 @@ export default (app, io, defaultState = {}) => {
       const channelId = Number(req.params.id);
       const channel = state.channels.find((c) => c.id === channelId);
 
-      const { data: { attributes } } = req.body;
+      const {
+        data: { attributes },
+      } = req.body;
       channel.name = attributes.name;
 
       const data = {
@@ -100,7 +115,9 @@ export default (app, io, defaultState = {}) => {
       io.emit('renameChannel', data);
     })
     .get('/api/v1/channels/:channelId/messages', (req, reply) => {
-      const messages = state.messages.filter((m) => m.channelId === Number(req.params.channelId));
+      const messages = state.messages.filter(
+        (m) => m.channelId === Number(req.params.channelId),
+      );
       const resources = messages.map((m) => ({
         type: 'messages',
         id: m.id,
@@ -112,7 +129,9 @@ export default (app, io, defaultState = {}) => {
       reply.send(response);
     })
     .post('/api/v1/channels/:channelId/messages', (req, reply) => {
-      const { data: { attributes } } = req.body;
+      const {
+        data: { attributes },
+      } = req.body;
       const message = {
         ...attributes,
         channelId: Number(req.params.channelId),

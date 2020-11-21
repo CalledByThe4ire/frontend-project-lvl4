@@ -54,6 +54,7 @@ const removeChannelFailure = (payload) => {
   console.error(payload);
   return {
     type: REMOVE_CHANNEL_FAILURE,
+    error: true,
     payload,
   };
 };

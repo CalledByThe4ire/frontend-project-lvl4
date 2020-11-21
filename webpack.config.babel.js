@@ -1,8 +1,18 @@
 // @ts-check
 
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import webpack from 'webpack';
+import dotenv from 'dotenv';
+
+const env = dotenv.config().parsed || {};
+
+const envKeys = Object.keys(env).reduce((acc, key) => {
+  acc[key] = JSON.stringify(env[key]);
+  return acc;
+}, {});
 
 const isProduction = process.env.NODE_ENV === 'production';
+
 console.log('isProduction', isProduction);
 
 module.exports = {
@@ -23,6 +33,11 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        ...envKeys,
+      },
+    }),
   ],
   module: {
     rules: [

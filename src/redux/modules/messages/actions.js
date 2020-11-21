@@ -16,6 +16,7 @@ export const addMessageSuccess = (payload) => ({
 
 export const addMessageFailure = (payload) => ({
   type: ADD_MESSAGE_FAILURE,
+  error: true,
   payload,
 });
 
