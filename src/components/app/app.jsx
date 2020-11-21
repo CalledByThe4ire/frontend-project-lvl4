@@ -3,16 +3,7 @@ import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
 import gon from 'gon';
 import { NicknameContext } from '../../context/nickname';
-import {
-  addChannelSuccess,
-  renameChannelSuccess,
-  removeChannelSuccess,
-  setCurrentChannelId,
-} from '../../actions/channelsActions';
-import {
-  addMessageSuccess,
-  removeChannelMessages,
-} from '../../actions/messagesActions';
+import { channelsActions, messagesActions } from '../../redux';
 import NavBar from '../navbar';
 import Layout from '../layout';
 import Channels from '../channels';
@@ -24,6 +15,15 @@ const App = () => {
   const dispatch = useDispatch();
 
   const nickname = useContext(NicknameContext);
+
+  const {
+    addChannelSuccess,
+    renameChannelSuccess,
+    removeChannelSuccess,
+    setCurrentChannelId,
+  } = channelsActions;
+
+  const { addMessageSuccess, removeChannelMessages } = messagesActions;
 
   useEffect(() => {
     socket.on('newMessage', (msg) => {

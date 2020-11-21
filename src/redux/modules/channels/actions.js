@@ -11,7 +11,7 @@ import {
   REMOVE_CHANNEL_FAILURE,
   SET_CURRENT_CHANNEL_ID,
 } from './types';
-import routes from '../routes';
+import routes from '../../../routes';
 
 const addChannelRequest = () => ({ type: ADD_CHANNEL_REQUEST });
 

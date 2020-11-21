@@ -5,7 +5,7 @@ import {
   ADD_MESSAGE_FAILURE,
   REMOVE_CHANNEL_MESSAGES,
 } from './types';
-import routes from '../routes';
+import routes from '../../../routes';
 
 const addMessageRequest = () => ({ type: ADD_MESSAGE_REQUEST });
 

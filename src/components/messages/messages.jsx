@@ -8,12 +8,15 @@ import {
   Button,
   Spinner,
 } from 'react-bootstrap';
+
+import { messagesActions } from '../../redux';
 import Message from '../message';
 import Error from '../error';
-import { addMessage } from '../../actions/messagesActions';
 
 const Messages = () => {
   const [message, setMessage] = useState('');
+
+  const { addMessage } = messagesActions;
 
   const dispatch = useDispatch();
 

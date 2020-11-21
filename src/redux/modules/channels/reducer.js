@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-
 import gon from 'gon';
 import {
   ADD_CHANNEL_REQUEST,
@@ -12,7 +10,7 @@ import {
   REMOVE_CHANNEL_SUCCESS,
   REMOVE_CHANNEL_FAILURE,
   SET_CURRENT_CHANNEL_ID,
-} from '../actions/types';
+} from './types';
 
 const initialState = {
   channels: gon.channels || [],

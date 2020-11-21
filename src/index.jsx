@@ -6,7 +6,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import NicknameProvider from './context/nickname';
-import store from './store';
+import store from './redux/store';
 import '../assets/application.scss';
 import App from './components/app';
 

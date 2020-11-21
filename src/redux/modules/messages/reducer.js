@@ -3,7 +3,7 @@ import {
   ADD_MESSAGE_SUCCESS,
   ADD_MESSAGE_FAILURE,
   REMOVE_CHANNEL_MESSAGES,
-} from '../actions/types';
+} from './types';
 
 const initialState = {
   messages: [],

@@ -3,12 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   Modal, Button, Form, Spinner,
 } from 'react-bootstrap';
-import { closeModal } from '../../actions/modalActions';
-import {
-  addChannel,
-  renameChannel,
-  removeChannel,
-} from '../../actions/channelsActions';
+
+import { channelsActions, modalActions } from '../../redux';
 
 export default () => {
   const [show, setShow] = useState(true);
@@ -16,6 +12,10 @@ export default () => {
   const [name, setName] = useState('');
 
   const [validated, setValidated] = useState(false);
+
+  const { closeModal } = modalActions;
+
+  const { addChannel, renameChannel, removeChannel } = channelsActions;
 
   const dispatch = useDispatch();
 

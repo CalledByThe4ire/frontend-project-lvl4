@@ -3,12 +3,15 @@ import {
   Badge, Button, ButtonGroup, Dropdown,
 } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
+import { channelsActions, modalActions } from '../../redux';
 import Modal from '../modal';
 import Error from '../error';
-import { setCurrentChannelId } from '../../actions/channelsActions';
-import { openModal } from '../../actions/modalActions';
 
 const Channels = () => {
+  const { setCurrentChannelId } = channelsActions;
+
+  const { openModal } = modalActions;
+
   const channels = useSelector((state) => state.channelsInfo.channels);
 
   const currentChannelId = useSelector(
@@ -66,7 +69,6 @@ const Channels = () => {
                 variant={
                   currentChannelId === channel.id ? 'primary' : 'secondary'
                 }
-
               />
 
               <Dropdown.Menu>
