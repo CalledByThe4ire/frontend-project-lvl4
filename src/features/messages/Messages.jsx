@@ -8,15 +8,13 @@ import {
   Button,
   Spinner,
 } from 'react-bootstrap';
-
-import { messagesActions } from '../../redux';
-import Message from '../message';
-import Error from '../error';
+import { addMessageRequest } from './messagesSlice';
+import Message from './Message';
+import Error from '../../components/Error';
+import { LoadingStatus } from '../../const';
 
 const Messages = () => {
   const [message, setMessage] = useState('');
-
-  const { addMessage } = messagesActions;
 
   const dispatch = useDispatch();
 
@@ -24,7 +22,9 @@ const Messages = () => {
     (state) => state.channelsInfo.currentChannelId,
   );
 
-  const isLoading = useSelector((state) => state.messagesInfo.isLoading);
+  const loadingStatus = useSelector(
+    (state) => state.messagesInfo.loadingStatus,
+  );
 
   const error = useSelector((state) => state.messagesInfo.error);
 
@@ -37,21 +37,23 @@ const Messages = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    dispatch(addMessage(currentChannelId, message));
+    const id = currentChannelId;
+
+    dispatch(addMessageRequest({ id, message }));
     setMessage('');
   };
 
   return (
     <div className="d-flex h-100 flex-column">
       <div className="overflow-auto d-flex flex-wrap mb-3">
-        {!isLoading
+        {!error
           && messages.length !== 0
           && messages
             .filter((msg) => msg.channelId === currentChannelId)
             .map(({ id, body, nickname }) => (
               <Message key={id} message={{ body, nickname }} />
             ))}
-        {!isLoading && error && <Error />}
+        {error && <Error />}
       </div>
       <Form noValidate className="mt-auto flex-nowrap" onSubmit={handleSubmit}>
         <InputGroup>
@@ -66,11 +68,13 @@ const Messages = () => {
             <Button
               variant="primary"
               type="submit"
-              className={classnames({ disabled: !message || isLoading })}
-              disabled={!message || isLoading}
+              className={classnames({
+                disabled: !message || loadingStatus === LoadingStatus.PENDING,
+              })}
+              disabled={!message || loadingStatus === LoadingStatus.PENDING}
               style={{ cursor: !message ? 'not-allowed' : 'pointer' }}
             >
-              {isLoading ? (
+              {loadingStatus === LoadingStatus.PENDING ? (
                 <>
                   <Spinner
                     as="span"

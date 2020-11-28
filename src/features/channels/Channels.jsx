@@ -3,15 +3,12 @@ import {
   Badge, Button, ButtonGroup, Dropdown,
 } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { channelsActions, modalActions } from '../../redux';
-import Modal from '../modal';
-import Error from '../error';
+import { setCurrentChannelId } from './channelsSlice';
+import { openModal } from '../modal/modalSlice';
+import Modal from '../modal/Modal';
+import Error from '../../components/Error';
 
 const Channels = () => {
-  const { setCurrentChannelId } = channelsActions;
-
-  const { openModal } = modalActions;
-
   const channels = useSelector((state) => state.channelsInfo.channels);
 
   const currentChannelId = useSelector(
@@ -20,18 +17,16 @@ const Channels = () => {
 
   const isModalOpened = useSelector((state) => state.modal.isOpened);
 
-  const isLoading = useSelector((state) => state.channelsInfo.isLoading);
-
   const error = useSelector((state) => state.channelsInfo.error);
 
   const dispatch = useDispatch();
 
-  const handleOpenModalClick = (params) => {
-    dispatch(openModal(params));
+  const handleOpenModalClick = (payload = {}) => {
+    dispatch(openModal(payload));
   };
 
   const handleCurrentChannelClick = (id) => {
-    dispatch(setCurrentChannelId(id));
+    dispatch(setCurrentChannelId({ id }));
   };
 
   return (
@@ -73,13 +68,13 @@ const Channels = () => {
 
               <Dropdown.Menu>
                 <Dropdown.Item
-                  onClick={() => handleOpenModalClick({ type: 'rename', id: channel.id })}
+                  onClick={() => handleOpenModalClick({ id: channel.id, type: 'rename' })}
                 >
                   Rename
                 </Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Item
-                  onClick={() => handleOpenModalClick({ type: 'remove', id: channel.id })}
+                  onClick={() => handleOpenModalClick({ id: channel.id, type: 'remove' })}
                 >
                   Remove
                 </Dropdown.Item>
@@ -89,7 +84,7 @@ const Channels = () => {
         </Dropdown>
       ))}
       {isModalOpened && <Modal />}
-      {!isLoading && error && <Error />}
+      {error && <Error />}
     </>
   );
 };

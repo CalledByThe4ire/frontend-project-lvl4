@@ -3,8 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   Modal, Button, Form, Spinner,
 } from 'react-bootstrap';
-
-import { channelsActions, modalActions } from '../../redux';
+import {
+  addChannelRequest,
+  renameChannelRequest,
+  removeChannelRequest,
+} from '../channels/channelsSlice';
+import { closeModal } from './modalSlice';
+import { LoadingStatus, ModalType } from '../../const';
 
 export default () => {
   const [show, setShow] = useState(true);
@@ -12,10 +17,6 @@ export default () => {
   const [name, setName] = useState('');
 
   const [validated, setValidated] = useState(false);
-
-  const { closeModal } = modalActions;
-
-  const { addChannel, renameChannel, removeChannel } = channelsActions;
 
   const dispatch = useDispatch();
 
@@ -29,14 +30,16 @@ export default () => {
 
   const channels = useSelector((state) => state.channelsInfo.channels);
 
-  const isLoading = useSelector((state) => state.channelsInfo.isLoading);
+  const loadingStatus = useSelector(
+    (state) => state.channelsInfo.loadingStatus,
+  );
 
   const handleClose = () => {
     setShow(false);
     dispatch(closeModal());
   };
 
-  const handleFormProcessing = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -49,25 +52,28 @@ export default () => {
     }
 
     if (inputRef.current) {
-      if (inputRef.current.value !== '') {
+      const { value } = inputRef.current;
+
+      if (value !== '') {
         setName('');
         dispatch(closeModal());
-        if (modalType === 'add') {
-          dispatch(addChannel(inputRef.current.value));
-        } else if (modalType === 'rename') {
-          dispatch(renameChannel(channelId, inputRef.current.value));
+
+        if (modalType === ModalType.ADD) {
+          dispatch(addChannelRequest({ name: value }));
+        } else if (modalType === ModalType.RENAME) {
+          dispatch(renameChannelRequest({ id: channelId, name: value }));
         }
       }
     } else {
       dispatch(closeModal());
-      dispatch(removeChannel(channelId));
+      dispatch(removeChannelRequest({ id: channelId }));
     }
   };
 
   useEffect(() => {
-    if (modalType === 'add') {
+    if (modalType === ModalType.ADD) {
       inputRef.current.focus();
-    } else if (modalType === 'rename') {
+    } else if (modalType === ModalType.RENAME) {
       inputRef.current.select();
       inputRef.current.focus();
     }
@@ -94,10 +100,10 @@ export default () => {
           noValidate
           validated={validated}
           ref={formRef}
-          onSubmit={handleFormProcessing}
+          onSubmit={handleSubmit}
         >
           <Form.Group className="mb-0">
-            {modalType !== 'remove' ? (
+            {modalType !== ModalType.REMOVE ? (
               <>
                 <Form.Control
                   type="text"
@@ -127,10 +133,10 @@ export default () => {
           Cancel
         </Button>
         <Button
-          variant={modalType === 'remove' ? 'danger' : 'primary'}
-          onClick={handleFormProcessing}
+          variant={modalType === ModalType.REMOVE ? 'danger' : 'primary'}
+          onClick={handleSubmit}
         >
-          {isLoading ? (
+          {loadingStatus === LoadingStatus.PENDING ? (
             <Spinner
               as="span"
               animation="grow"
