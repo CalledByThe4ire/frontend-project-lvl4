@@ -38,12 +38,22 @@ export default ({ channels, currentChannelId }) => {
     preloadedState,
   });
 
-  const username = faker.name.findName();
-  cookies.set('username', username);
+  const setUsername = () => {
+    const username = faker.name.findName();
+    cookies.set('username', username);
+  };
+
+  const getUsername = () => cookies.get('username');
+
+  if (!getUsername()) {
+    setUsername();
+  }
+
+  const username = getUsername();
 
   ReactDOM.render(
     <Provider store={store}>
-      <UserContext.Provider value={cookies.get('username')}>
+      <UserContext.Provider value={username}>
         <App socket={io()} />
       </UserContext.Provider>
     </Provider>,
