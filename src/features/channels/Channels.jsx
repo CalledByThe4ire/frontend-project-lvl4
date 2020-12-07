@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentChannelId } from './channelsSlice';
 import { openModal } from '../modal/modalSlice';
 import Modal from '../modal/Modal';
-import Error from '../../components/Error';
 
 const Channels = () => {
   const channels = useSelector((state) => state.channelsInfo.channels);
@@ -16,8 +15,6 @@ const Channels = () => {
   );
 
   const isModalOpened = useSelector((state) => state.modal.isOpened);
-
-  const error = useSelector((state) => state.channelsInfo.error);
 
   const dispatch = useDispatch();
 
@@ -84,7 +81,6 @@ const Channels = () => {
         </Dropdown>
       ))}
       {isModalOpened && <Modal />}
-      {error && <Error />}
     </>
   );
 };

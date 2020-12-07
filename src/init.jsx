@@ -11,11 +11,18 @@ import io from 'socket.io-client';
 import cookies from 'js-cookie';
 import Rollbar from 'rollbar';
 import rollbarMiddleware from 'rollbar-redux-middleware';
+import {
+  addChannel,
+  renameChannel,
+  removeChannel,
+} from './features/channels/channelsSlice';
+import {
+  addMessage,
+} from './features/messages/messagesSlice';
 import UserContext from './context/UserContext.jsx';
 import App from './components/App.jsx';
 import rootReducer from './reducers';
 import rollbarConfig from '../config/rollbar';
-import { LoadingStatus } from './const';
 
 export default ({ channels, currentChannelId }) => {
   const rollbarRedux = rollbarMiddleware(new Rollbar(rollbarConfig));
@@ -26,9 +33,6 @@ export default ({ channels, currentChannelId }) => {
     channelsInfo: {
       channels,
       currentChannelId,
-      loadingStatus: LoadingStatus.IDLE,
-      currentRequestId: undefined,
-      error: null,
     },
   };
 
@@ -50,6 +54,53 @@ export default ({ channels, currentChannelId }) => {
   }
 
   const username = getUsername();
+
+  const socket = io();
+
+  socket.on('newMessage', (msg) => {
+    const {
+      data: {
+        attributes: { message: body, id, channelId },
+      },
+    } = msg;
+
+    store.dispatch(
+      addMessage({
+        body,
+        id,
+        username,
+        channelId,
+      }),
+    );
+  });
+
+  socket.on('newChannel', (channel) => {
+    const {
+      data: {
+        attributes: { name, removable, id },
+      },
+    } = channel;
+
+    store.dispatch(addChannel({ name, removable, id }));
+  });
+
+  socket.on('renameChannel', (channel) => {
+    const {
+      data: {
+        attributes: { name, id },
+      },
+    } = channel;
+
+    store.dispatch(renameChannel({ name, id }));
+  });
+
+  socket.on('removeChannel', (channelId) => {
+    const {
+      data: { id },
+    } = channelId;
+
+    store.dispatch(removeChannel({ id }));
+  });
 
   ReactDOM.render(
     <Provider store={store}>

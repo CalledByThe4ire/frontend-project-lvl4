@@ -1,7 +1,4 @@
-export const LoadingStatus = {
-  IDLE: 'idle',
-  PENDING: 'pending',
-};
+/* eslint-disable import/prefer-default-export */
 
 export const ModalType = {
   ADD: 'add',

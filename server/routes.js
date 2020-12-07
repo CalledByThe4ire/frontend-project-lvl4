@@ -32,18 +32,9 @@ const buildState = (defaultState) => {
 export default (app, io, defaultState = {}) => {
   const state = buildState(defaultState);
 
-  const rollbarConfig = {
-    accessToken: '1ddab53d467940529b53d2a7711ca759',
-    captureUncaught: true,
-    captureUnhandledRejections: true,
-    payload: {
-      environment: 'production',
-    },
-  };
-
   app
     .get('/', (_req, reply) => {
-      reply.view('index.pug', { gon: state, rollbarConfig });
+      reply.view('index.pug', { gon: state });
     })
     .get('/api/v1/channels', (_req, reply) => {
       const resources = state.channels.map((c) => ({
