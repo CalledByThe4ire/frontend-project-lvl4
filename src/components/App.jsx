@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import NavBar from './Navbar';
 import Channels from '../features/channels/Channels';
-import Messages from '../features/messages/Messages';
+import AddMessage from '../features/messages/AddMessage';
 
 const App = () => (
   <>
@@ -13,7 +13,7 @@ const App = () => (
           <Channels />
         </Col>
         <Col className="h-100 pr-xs-3 pr-sm-0">
-          <Messages />
+          <AddMessage />
         </Col>
       </Row>
     </Container>
