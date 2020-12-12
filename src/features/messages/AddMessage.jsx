@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Form,
@@ -17,6 +17,8 @@ import { ErrorsType } from '../../const';
 import Message from './Message';
 
 const Messages = () => {
+  const inputRef = useRef(null);
+
   const currentChannelId = useSelector(
     (state) => state.channelsInfo.currentChannelId,
   );
@@ -41,16 +43,26 @@ const Messages = () => {
         });
 
         resetForm({ values: '' });
+
+        inputRef.current.focus();
       } catch (err) {
         console.error(err.message);
+
         setErrors({
           requestFailure: i18next.t(ErrorsType.REQUEST_FAILURE),
         });
+
+        inputRef.current.select();
+        inputRef.current.focus();
       }
     },
   });
 
   const messages = useSelector((state) => state.messagesInfo.messages);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, [currentChannelId]);
 
   return (
     <div className="d-flex h-100 flex-column">
@@ -75,11 +87,11 @@ const Messages = () => {
             name="message"
             value={formik.values.message}
             onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
             isValid={
               formik.touched.message && !Object.keys(formik.errors).length
             }
             isInvalid={!!Object.keys(formik.errors).length}
+            ref={inputRef}
           />
           <InputGroup.Append>
             <Button
