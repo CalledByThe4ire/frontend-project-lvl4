@@ -1,20 +1,21 @@
 import React from 'react';
-import {
-  Badge, Button, ButtonGroup, Dropdown,
-} from 'react-bootstrap';
+import { Badge, Button, ButtonGroup, Dropdown } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentChannelId } from './channelsSlice';
+import {
+  channelsSelector,
+  currentChannelIdSelector,
+} from './channelsSelectors';
 import { openModal } from '../modal/modalSlice';
+import { isModalOpenedSelector } from '../modal/modalSelectors';
 import Modal from '../modal/Modal';
 
 const Channels = () => {
-  const channels = useSelector((state) => state.channelsInfo.channels);
+  const channels = useSelector(channelsSelector);
 
-  const currentChannelId = useSelector(
-    (state) => state.channelsInfo.currentChannelId,
-  );
+  const currentChannelId = useSelector(currentChannelIdSelector);
 
-  const isModalOpened = useSelector((state) => state.modal.isOpened);
+  const isModalOpened = useSelector(isModalOpenedSelector);
 
   const dispatch = useDispatch();
 
@@ -65,13 +66,17 @@ const Channels = () => {
 
               <Dropdown.Menu>
                 <Dropdown.Item
-                  onClick={() => handleOpenModalClick({ id: channel.id, type: 'rename' })}
+                  onClick={() =>
+                    handleOpenModalClick({ id: channel.id, type: 'rename' })
+                  }
                 >
                   Rename
                 </Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Item
-                  onClick={() => handleOpenModalClick({ id: channel.id, type: 'remove' })}
+                  onClick={() =>
+                    handleOpenModalClick({ id: channel.id, type: 'remove' })
+                  }
                 >
                   Remove
                 </Dropdown.Item>

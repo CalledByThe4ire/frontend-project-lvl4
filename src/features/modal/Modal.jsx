@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { createSelector } from '@reduxjs/toolkit';
-import {
-  Modal, Button, Form, Spinner,
-} from 'react-bootstrap';
+import { Modal, Button, Form, Spinner } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -12,6 +9,11 @@ import classnames from 'classnames';
 import routes from '../../routes';
 import { closeModal } from './modalSlice';
 import { ModalType, ErrorsType } from '../../const';
+import {
+  channelsNamesSelector,
+  currentChannelSelector,
+} from '../channels/channelsSelectors';
+import { modalExtraSelector, modalTypeSelector } from './modalSelectors';
 
 export default () => {
   const [show, setShow] = useState(true);
@@ -20,35 +22,29 @@ export default () => {
 
   const inputRef = useRef(null);
 
-  const modalType = useSelector((state) => state.modal.type);
+  const selectSelf = (state) => state;
 
-  const channelsSelector = (state) => state.channelsInfo.channels;
+  const modalType = useSelector(modalTypeSelector);
 
-  const currentChannelId = useSelector((state) => state.modal.extra);
+  const currentChannelId = useSelector(modalExtraSelector);
 
-  const channelsNames = createSelector(channelsSelector, (channels) =>
-    // eslint-disable-next-line
-    channels.map((channel) => channel.name))(useSelector((state) => state));
-
-  const channels = useSelector(channelsSelector);
-
-  const currentChannel = channels.find((c) => c.id === currentChannelId);
+  const currentChannel = useSelector(currentChannelSelector);
 
   const requiredSchema = Yup.string().required(i18next.t(ErrorsType.REQUIRED));
 
   const alphanumericSchema = Yup.string().matches(
     /^[a-z0-9]+$/i,
-    i18next.t(ErrorsType.ALPHANUMERIC),
+    i18next.t(ErrorsType.ALPHANUMERIC)
   );
 
   const minCharactersSchema = Yup.string().min(
     3,
-    i18next.t(ErrorsType.MIN_CHARACTERS)(3),
+    i18next.t(ErrorsType.MIN_CHARACTERS)(3)
   );
 
   const notOneOfSchema = Yup.string().notOneOf(
-    channelsNames,
-    i18next.t(ErrorsType.UNIQUE),
+    channelsNamesSelector(useSelector(selectSelf)),
+    i18next.t(ErrorsType.UNIQUE)
   );
 
   const schema = Yup.object({
@@ -61,12 +57,13 @@ export default () => {
 
   const formik = useFormik({
     initialValues: {
-      channelName: currentChannel ? currentChannel.name : '',
+      channelName:
+        currentChannel && currentChannel.removable ? currentChannel.name : '',
     },
     validationSchema: modalType !== ModalType.REMOVE ? schema : null,
     onSubmit: async (
       { channelName },
-      { setSubmitting, resetForm, setErrors },
+      { setSubmitting, resetForm, setErrors }
     ) => {
       setSubmitting(false);
 
@@ -153,8 +150,8 @@ export default () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   isValid={
-                    formik.touched.channelName
-                    && !Object.keys(formik.errors).length
+                    formik.touched.channelName &&
+                    !Object.keys(formik.errors).length
                   }
                   isInvalid={!!Object.keys(formik.errors).length}
                 />
@@ -174,8 +171,8 @@ export default () => {
             type="submit"
             className={classnames({ disabled: !!formik.errors.channelName })}
             disabled={
-              (formik.touched.channelName && !!formik.errors.channelName)
-              || formik.isSubmitting
+              (formik.touched.channelName && !!formik.errors.channelName) ||
+              formik.isSubmitting
             }
             style={{
               cursor: formik.errors.channelName ? 'not-allowed' : 'pointer',
