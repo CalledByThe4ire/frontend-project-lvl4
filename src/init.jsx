@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import faker from 'faker';
 import io from 'socket.io-client';
+import i18next from 'i18next';
 import cookies from 'js-cookie';
 import Rollbar from 'rollbar';
 import rollbarMiddleware from 'rollbar-redux-middleware';
@@ -21,8 +22,17 @@ import UserContext from './context/UserContext.jsx';
 import App from './components/App.jsx';
 import rootReducer from './reducers';
 import rollbarConfig from '../config/rollbar';
+import { en } from './locales';
 
 export default async ({ channels, currentChannelId }) => {
+  await i18next.init({
+    lng: 'en',
+    debug: true,
+    resources: {
+      en,
+    },
+  });
+
   const rollbarRedux = rollbarMiddleware(new Rollbar(rollbarConfig));
 
   const middlewares = [...getDefaultMiddleware(), rollbarRedux];
