@@ -10,8 +10,10 @@ import {
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import i18next from 'i18next';
 import classnames from 'classnames';
 import routes from '../../routes';
+import { ErrorsType } from '../../const';
 import Message from './Message';
 
 const Messages = () => {
@@ -21,7 +23,7 @@ const Messages = () => {
 
   const messages = useSelector((state) => state.messagesInfo.messages);
 
-  const requiredSchema = Yup.string().required('Required');
+  const requiredSchema = Yup.string().required(i18next.t(ErrorsType.REQUIRED));
 
   const schema = Yup.object({
     message: Yup.string().concat(requiredSchema),
@@ -57,7 +59,7 @@ const Messages = () => {
           } catch (err) {
             console.error(err.message);
             setErrors({
-              requestFailure: 'Something went wrong… Please, try again later',
+              requestFailure: i18next.t(ErrorsType.REQUEST_FAILURE),
             });
           }
         }}
@@ -88,8 +90,8 @@ const Messages = () => {
                 value={values.message}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                isValid={touched.message && !errors.message}
-                isInvalid={!!errors.message}
+                isValid={touched.message && !Object.keys(errors).length}
+                isInvalid={!!Object.keys(errors).length}
               />
               <InputGroup.Append>
                 <Button
@@ -121,7 +123,7 @@ const Messages = () => {
                 </Button>
               </InputGroup.Append>
               <Form.Control.Feedback type="invalid">
-                {errors.message}
+                {errors[Object.keys(errors).find((v) => v)]}
               </Form.Control.Feedback>
             </InputGroup>
           </Form>

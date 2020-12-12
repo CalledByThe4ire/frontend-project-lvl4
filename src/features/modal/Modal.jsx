@@ -7,10 +7,11 @@ import {
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import i18next from 'i18next';
 import classnames from 'classnames';
 import routes from '../../routes';
 import { closeModal } from './modalSlice';
-import { ModalType } from '../../const';
+import { ModalType, ErrorsType } from '../../const';
 
 export default () => {
   const [show, setShow] = useState(true);
@@ -33,19 +34,24 @@ export default () => {
 
   const currentChannel = channels.find((c) => c.id === currentChannelId);
 
-  const requiredSchema = Yup.string().required('Required');
+  const requiredSchema = Yup.string().required(
+    i18next.t(ErrorsType.REQUIRED),
+  );
 
   const alphanumericSchema = Yup.string().matches(
     /^[a-z0-9]+$/i,
-    'Only alphanumeric allowed',
+    i18next.t(ErrorsType.ALPHANUMERIC),
   );
 
   const minCharactersSchema = Yup.string().min(
     3,
-    `Must be at least ${3} characters`,
+    i18next.t(ErrorsType.MIN_CHARACTERS)(3),
   );
 
-  const notOneOfSchema = Yup.string().notOneOf(channelsNames, 'Must be unique');
+  const notOneOfSchema = Yup.string().notOneOf(
+    channelsNames,
+    i18next.t(ErrorsType.UNIQUE),
+  );
 
   const schema = Yup.object({
     channelName: Yup.string()
@@ -122,7 +128,7 @@ export default () => {
             console.error(err.message);
 
             setErrors({
-              requestFailure: 'Something went wrong… Please, try again later',
+              requestFailure: i18next.t(ErrorsType.REQUEST_FAILURE),
             });
           }
         }}

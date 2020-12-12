@@ -16,15 +16,13 @@ import {
   renameChannel,
   removeChannel,
 } from './features/channels/channelsSlice';
-import {
-  addMessage,
-} from './features/messages/messagesSlice';
+import { addMessage } from './features/messages/messagesSlice';
 import UserContext from './context/UserContext.jsx';
 import App from './components/App.jsx';
 import rootReducer from './reducers';
 import rollbarConfig from '../config/rollbar';
 
-export default ({ channels, currentChannelId }) => {
+export default async ({ channels, currentChannelId }) => {
   const rollbarRedux = rollbarMiddleware(new Rollbar(rollbarConfig));
 
   const middlewares = [...getDefaultMiddleware(), rollbarRedux];
