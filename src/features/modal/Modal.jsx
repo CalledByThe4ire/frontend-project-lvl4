@@ -120,7 +120,7 @@ export default () => {
     }
 
     return null;
-  });
+  }, []);
 
   return (
     <Modal
